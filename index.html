@@ -89,10 +89,9 @@
     #hero {
       min-height: 100vh;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0;
       position: relative;
       overflow: hidden;
     }
@@ -107,61 +106,24 @@
       z-index: 0;
     }
 
-    /* Left: logo + text */
-    .hero-left {
-      flex: 0 1 460px;
-      width: 460px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6rem 2rem 4rem;
+    .hero-title {
       position: relative;
       z-index: 1;
-    }
-
-    /* Right: title image */
-    .hero-right {
-      flex: 0 0 auto;
-      position: relative;
-      z-index: 1;
-      line-height: 0;
-      display: flex;
-      align-items: center;
-    }
-    .hero-right img {
-      height: min(100vh, 720px);
+      height: min(80vh, 680px);
       width: auto;
       display: block;
-    }
-
-    .hero-logo {
-      width: min(420px, 100%);
-      filter: drop-shadow(0 0 32px rgba(176,106,255,.9)) drop-shadow(0 0 80px rgba(255,94,203,.5));
-      animation: floatLogo 4s ease-in-out infinite;
-    }
-
-    @keyframes floatLogo {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-10px); }
-    }
-
-    .hero-catch {
-      margin-top: 2rem;
-      font-size: clamp(.95rem, 2.5vw, 1.2rem);
-      line-height: 2;
-      color: var(--text-sub);
-      letter-spacing: .08em;
-      text-shadow: 0 0 10px rgba(176,106,255,.5);
+      filter: drop-shadow(0 0 24px rgba(176,106,255,.6)) drop-shadow(0 0 60px rgba(255,94,203,.3));
     }
 
     .hero-scroll {
-      margin-top: 2.5rem;
+      position: relative;
+      z-index: 1;
+      margin-top: 1.8rem;
       font-size: .8rem;
       letter-spacing: .25em;
       color: var(--text-sub);
       animation: blink 2s ease-in-out infinite;
+      text-align: center;
     }
     .hero-scroll::after { content: '▼'; display: block; text-align: center; margin-top: .3rem; }
 
@@ -184,10 +146,7 @@
 
     /* ===== Responsive: mobile ===== */
     @media (max-width: 768px) {
-      #hero { flex-direction: column; min-height: 100svh; }
-      .hero-left { padding: 6rem 1.5rem 2rem; }
-      .hero-right { justify-content: center; }
-      .hero-right img { height: auto; width: 100%; }
+      nav, #hero { display: none; }
     }
 
     /* ===== About / Event Info ===== */
@@ -603,27 +562,8 @@
 <!-- Hero -->
 <section id="hero">
   <div class="hero-bg" aria-hidden="true"></div>
-
-  <!-- Left: logo + text -->
-  <div class="hero-left">
-    <img
-      src="images/logo.png"
-      alt="闇堕ち少女酒場いくりぷ"
-      class="hero-logo"
-      onerror="this.alt='闇堕ち少女酒場いくりぷ'; this.style.cssText='font-size:2rem;color:#b06aff;font-family:sans-serif;'"
-    />
-    <p class="hero-catch">
-      今宵、少女たちが闇へと堕ちる<br />
-      <small style="font-size:.85em; color: var(--text-sub);">VRChat 1対1ロールプレイ型イベント</small>
-    </p>
-    <p class="hero-scroll" aria-hidden="true">SCROLL</p>
-  </div>
-
-  <!-- Right: title image -->
-  <div class="hero-right">
-    <img src="images/title.png" alt="いくりぷ タイトル" onerror="this.closest('.hero-right').style.display='none'" />
-  </div>
-
+  <img src="images/title.png" alt="闇堕ち少女酒場いくりぷ" class="hero-title" />
+  <p class="hero-scroll" aria-hidden="true">SCROLL</p>
 </section>
 
 <!-- Cast group visual (below hero) -->
@@ -890,7 +830,7 @@
     <div class="notice-box reveal" style="max-width:680px;">
       <p style="font-size:.95rem; line-height:2; color:var(--text-main); margin-bottom:1.4rem;">
         営業後に公式グループのインスタンスとしてアフター会場が開かれます。<br />
-        あらかじめ公式グループに参加のうえ、アフター開催のポスト等をご確認のうえインスタンスにJoinしてください。
+        あらかじめ公式グループにご参加を頂き、アフター開催のポストをご確認のうえでインスタンスにJoinしてください。
       </p>
       <a href="https://vrc.group/IKRP.4845" target="_blank" rel="noopener noreferrer"
          style="display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,var(--purple-main),var(--pink-main)); color:#fff; font-size:.92rem; font-weight:700; letter-spacing:.06em; padding:.75rem 1.6rem; border-radius:100px; text-decoration:none; box-shadow:0 4px 20px rgba(123,47,255,.4);">
