@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>闇堕ち少女酒場いくりぷ</title>
+  <meta name="description" content="VRChat上のロールプレイイベント「闇堕ち少女酒場いくりぷ」公式サイト。衣装と性格の闇堕ち前後の変化をお楽しみいただく、1対1接客イベントです。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple-deep:   #0d0015;
+      --purple-dark:   #1a002e;
+      --purple-mid:    #3a005e;
+      --purple-main:   #7b2fff;
+      --purple-light:  #b06aff;
+      --pink-main:     #ff5ecb;
+      --pink-light:    #ffb3e6;
+      --gold:          #ffd700;
+      --text-main:     #f0e6ff;
+      --text-sub:      #c9a8ff;
+      --border-glow:   rgba(176, 106, 255, 0.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: var(--purple-deep);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== Background particles (CSS only) ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(123,47,255,.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 100%, rgba(255,94,203,.13) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 80% at 50% 50%, rgba(26,0,46,.8) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    section, header, footer { position: relative; z-index: 1; }
+
+    /* ===== Utility ===== */
+    .container {
+      width: min(1100px, 92%);
+      margin-inline: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 900;
+      letter-spacing: .12em;
+      color: var(--purple-light);
+      text-shadow: 0 0 18px var(--purple-main), 0 0 40px rgba(123,47,255,.5);
+      margin-bottom: 2.4rem;
+    }
+    .section-title span {
+      display: block;
+      font-size: .75em;
+      letter-spacing: .3em;
+      color: var(--pink-light);
+      text-shadow: 0 0 12px var(--pink-main);
+      margin-bottom: .4rem;
+    }
+
+    /* ===== Divider ===== */
+    .divider {
+      width: 80%;
+      max-width: 500px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-light), var(--pink-main), var(--purple-light), transparent);
+      margin: 0 auto 3.5rem;
+      box-shadow: 0 0 8px var(--purple-light);
+    }
+
+    /* ===== Header / Hero ===== */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        url('images/hero-bg.jpg') center/cover no-repeat,
+        linear-gradient(160deg, #0d0015 0%, #1a002e 60%, #0d0015 100%);
+      opacity: .35;
+      z-index: 0;
+    }
+
+    /* Left: logo + text */
+    .hero-left {
+      flex: 0 1 460px;
+      width: 460px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Right: title image */
+    .hero-right {
+      flex: 0 0 auto;
+      position: relative;
+      z-index: 1;
+      line-height: 0;
+      display: flex;
+      align-items: center;
+    }
+    .hero-right img {
+      height: min(100vh, 720px);
+      width: auto;
+      display: block;
+    }
+
+    .hero-logo {
+      width: min(420px, 100%);
+      filter: drop-shadow(0 0 32px rgba(176,106,255,.9)) drop-shadow(0 0 80px rgba(255,94,203,.5));
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .hero-catch {
+      margin-top: 2rem;
+      font-size: clamp(.95rem, 2.5vw, 1.2rem);
+      line-height: 2;
+      color: var(--text-sub);
+      letter-spacing: .08em;
+      text-shadow: 0 0 10px rgba(176,106,255,.5);
+    }
+
+    .hero-scroll {
+      margin-top: 2.5rem;
+      font-size: .8rem;
+      letter-spacing: .25em;
+      color: var(--text-sub);
+      animation: blink 2s ease-in-out infinite;
+    }
+    .hero-scroll::after { content: '▼'; display: block; text-align: center; margin-top: .3rem; }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ===== Cast hero image (below hero) ===== */
+    #cast-hero {
+      width: 100%;
+      line-height: 0;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+    }
+    #cast-hero img {
+      width: min(600px, 100%);
+      height: auto;
+      display: block;
+    }
+
+    /* ===== Responsive: mobile ===== */
+    @media (max-width: 768px) {
+      #hero { flex-direction: column; min-height: 100svh; }
+      .hero-left { padding: 6rem 1.5rem 2rem; }
+      .hero-right { justify-content: center; }
+      .hero-right img { height: auto; width: 100%; }
+    }
+
+    /* ===== About / Event Info ===== */
+    #about {
+      padding: 5rem 1.5rem;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 0;
+    }
+
+    .info-card {
+      background: linear-gradient(135deg, rgba(58,0,94,.55), rgba(26,0,46,.8));
+      border: 1px solid var(--border-glow);
+      border-radius: 16px;
+      padding: 2rem 1.6rem;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 30px rgba(123,47,255,.2), inset 0 1px 0 rgba(255,255,255,.06);
+      transition: transform .3s, box-shadow .3s;
+    }
+    .info-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 40px rgba(123,47,255,.35);
+    }
+
+    .info-card .card-icon {
+      font-size: 2rem;
+      margin-bottom: .8rem;
+    }
+
+    .info-card h3 {
+      font-size: 1rem;
+      letter-spacing: .15em;
+      color: var(--pink-light);
+      margin-bottom: .6rem;
+      text-transform: uppercase;
+    }
+
+    .info-card p {
+      font-size: .95rem;
+      line-height: 1.9;
+      color: var(--text-main);
+    }
+
+    /* ===== Cast Section ===== */
+    #cast {
+      padding: 5rem 1.5rem;
+      background: linear-gradient(180deg, transparent, rgba(58,0,94,.15), transparent);
+    }
+
+    /* Cast grid */
+    .cast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.6rem;
+    }
+
+    .cast-card {
+      background: linear-gradient(160deg, rgba(58,0,94,.6), rgba(13,0,21,.8));
+      border: 1px solid var(--border-glow);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s;
+      cursor: default;
+      position: relative;
+    }
+    .cast-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 50px rgba(123,47,255,.45), 0 0 0 1px rgba(176,106,255,.4);
+    }
+
+    /* Single image per cast (contains both before & after states) */
+    .cast-card .cast-image {
+      width: 100%;
+      overflow: hidden;
+      background: var(--purple-dark);
+      line-height: 0;
+    }
+    .cast-card .cast-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Placeholder when no image */
+    .cast-image-placeholder {
+      width: 100%;
+      aspect-ratio: 2/1;
+      background: linear-gradient(160deg, rgba(58,0,94,.8), rgba(123,47,255,.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--border-glow);
+    }
+
+    .cast-info {
+      padding: 1rem 1.1rem 1.2rem;
+    }
+    .cast-info .cast-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: .05em;
+    }
+    .cast-info .cast-chara {
+      font-size: .82rem;
+      color: var(--text-sub);
+      margin-top: .3rem;
+      line-height: 1.6;
+    }
+
+    .cast-card { cursor: pointer; }
+
+    .cast-placeholder-label {
+      font-size: .75rem;
+      color: var(--text-sub);
+      text-align: center;
+      padding: 2rem 1rem;
+      opacity: .6;
+    }
+
+    /* ===== Lightbox ===== */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, .88);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(6px);
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      width: 90vw;
+      max-height: 92svh;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 0 60px rgba(123,47,255,.5), 0 0 120px rgba(255,94,203,.2);
+      display: block;
+      object-fit: contain;
+    }
+    #lightbox-close {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.4rem;
+      background: rgba(58,0,94,.85);
+      border: 1px solid var(--border-glow);
+      color: var(--text-main);
+      font-size: 1.5rem;
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      transition: background .2s;
+    }
+    #lightbox-close:hover { background: var(--purple-mid); }
+
+    /* ===== Campaign Section ===== */
+    #campaign {
+      padding: 5rem 1.5rem;
+    }
+
+    .campaign-inner {
+      background: linear-gradient(135deg, rgba(58,0,94,.5), rgba(26,0,46,.85));
+      border: 1px solid var(--border-glow);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 4px 60px rgba(123,47,255,.2), inset 0 1px 0 rgba(255,255,255,.05);
+      max-width: 800px;
+      margin-inline: auto;
+    }
+
+    .campaign-title {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 900;
+      text-align: center;
+      color: var(--pink-light);
+      text-shadow: 0 0 18px var(--pink-main);
+      letter-spacing: .12em;
+      margin-bottom: 2rem;
+    }
+
+    .campaign-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .campaign-item {
+      background: rgba(13,0,21,.5);
+      border: 1px solid rgba(255,94,203,.3);
+      border-radius: 14px;
+      padding: 1.4rem 1.2rem;
+    }
+    .campaign-item h4 {
+      font-size: .85rem;
+      letter-spacing: .1em;
+      color: var(--pink-main);
+      margin-bottom: .7rem;
+      text-shadow: 0 0 10px var(--pink-main);
+    }
+    .campaign-item p {
+      font-size: .9rem;
+      line-height: 1.8;
+      color: var(--text-main);
+    }
+
+    .campaign-note {
+      background: rgba(13,0,21,.4);
+      border-left: 3px solid var(--purple-light);
+      border-radius: 0 10px 10px 0;
+      padding: 1.2rem 1.4rem;
+      font-size: .88rem;
+      line-height: 2;
+      color: var(--text-sub);
+    }
+    .campaign-note strong {
+      color: var(--pink-light);
+    }
+
+    /* ===== Notice Section ===== */
+    #notice {
+      padding: 5rem 1.5rem;
+      background: linear-gradient(180deg, transparent, rgba(123,47,255,.08), transparent);
+    }
+
+    .notice-box {
+      background: linear-gradient(135deg, rgba(58,0,94,.45), rgba(26,0,46,.8));
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 780px;
+      margin-inline: auto;
+      box-shadow: 0 4px 40px rgba(123,47,255,.15);
+    }
+
+    .notice-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .9rem;
+    }
+
+    .notice-box ul li {
+      padding-left: 1.4rem;
+      position: relative;
+      font-size: .93rem;
+      line-height: 1.85;
+      color: var(--text-main);
+    }
+    .notice-box ul li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--purple-light);
+      font-size: .7rem;
+      top: .35rem;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      padding: 3.5rem 1.5rem 2.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(176,106,255,.2);
+    }
+
+    .footer-logo {
+      width: min(200px, 55vw);
+      margin-bottom: 1.6rem;
+      filter: drop-shadow(0 0 12px rgba(176,106,255,.5));
+    }
+
+    .twitter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: linear-gradient(135deg, var(--purple-main), var(--pink-main));
+      color: #fff;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: .85rem 2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      box-shadow: 0 4px 24px rgba(123,47,255,.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .twitter-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 36px rgba(123,47,255,.6);
+    }
+    .twitter-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    .footer-copy {
+      margin-top: 2rem;
+      font-size: .78rem;
+      color: rgba(200,180,255,.4);
+      letter-spacing: .08em;
+    }
+
+    /* ===== Nav (minimal sticky) ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(13,0,21,.75);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(176,106,255,.15);
+      padding: .7rem 1.5rem;
+    }
+
+    .nav-inner {
+      width: min(1100px, 92%);
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      height: 36px;
+      filter: drop-shadow(0 0 6px rgba(176,106,255,.6));
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.6rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-sub);
+      text-decoration: none;
+      font-size: .82rem;
+      letter-spacing: .12em;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--pink-light); }
+
+    @media (max-width: 500px) {
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: .75rem; }
+    }
+
+    /* ===== Scroll animations ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ===== Stars background ===== */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+    }
+    @keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
+  </style>
+</head>
+<body>
+
+<!-- Lightbox -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="キャスト画像">
+  <button id="lightbox-close" aria-label="閉じる">✕</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<!-- Stars -->
+<div class="stars" id="stars" aria-hidden="true"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <img src="images/logo.png" alt="いくりぷ" class="nav-logo" onerror="this.style.display='none'" />
+    <ul class="nav-links">
+      <li><a href="#about">イベント情報</a></li>
+      <li><a href="#cast">キャスト</a></li>
+      <li><a href="#campaign">キャンペーン</a></li>
+      <li><a href="#notice">注意事項</a></li>
+      <li><a href="#after">アフター</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+
+  <!-- Left: logo + text -->
+  <div class="hero-left">
+    <img
+      src="images/logo.png"
+      alt="闇堕ち少女酒場いくりぷ"
+      class="hero-logo"
+      onerror="this.alt='闇堕ち少女酒場いくりぷ'; this.style.cssText='font-size:2rem;color:#b06aff;font-family:sans-serif;'"
+    />
+    <p class="hero-catch">
+      今宵、少女たちが闇へと堕ちる<br />
+      <small style="font-size:.85em; color: var(--text-sub);">VRChat 1対1ロールプレイ型イベント</small>
+    </p>
+    <p class="hero-scroll" aria-hidden="true">SCROLL</p>
+  </div>
+
+  <!-- Right: title image -->
+  <div class="hero-right">
+    <img src="images/title.png" alt="いくりぷ タイトル" onerror="this.closest('.hero-right').style.display='none'" />
+  </div>
+
+</section>
+
+<!-- Cast group visual (below hero) -->
+<div id="cast-hero">
+  <img src="images/cast-group.jpg" alt="キャスト集合" onerror="this.closest('#cast-hero').style.display='none'" />
+</div>
+
+<!-- About / Event Info -->
+<section id="about">
+  <div class="container">
+    <h2 class="section-title reveal">
+      <span>EVENT INFO</span>
+      イベント情報
+    </h2>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="info-card reveal">
+        <div class="card-icon">🌙</div>
+        <h3>コンセプト</h3>
+        <p>
+          衣装と性格の<strong style="color:var(--pink-light)">闇堕ち前後の変化</strong>をお客様に楽しんでいただく、1対1の接客イベントです。<br />
+          普通の少女が、あなたの前で"堕ちていく"──
+        </p>
+      </div>
+      <div class="info-card reveal">
+        <div class="card-icon">📅</div>
+        <h3>開催日時</h3>
+        <p>
+          毎週<strong style="color:var(--pink-light)">金曜日 23:10 〜</strong><br />
+          各インスタンスリーダーへリクイン（1回まで）<br />
+          <small style="color:var(--text-sub)">※月に1回お休みあり</small>
+        </p>
+      </div>
+      <div class="info-card reveal">
+        <div class="card-icon">🎭</div>
+        <h3>イベント形式</h3>
+        <p>
+          1対1 ロールプレイ型<br />
+          通常はランダム制でキャストが決まります。<br />
+          <small style="color:var(--text-sub)">（キャンペーン特典で指名可）</small>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cast -->
+<section id="cast">
+  <div class="container">
+    <h2 class="section-title reveal">
+      <span>CAST</span>
+      キャスト紹介
+    </h2>
+    <div class="divider"></div>
+    <!-- =====================================================
+         キャストデータ
+         追加・削除・変更はこの cast-grid 内の .cast-card を編集。
+         画像は images/cast/ に配置。キャラ名は闇堕ち前の通常名のみ表示。
+
+         追加テンプレート:
+         <div class="cast-card reveal">
+           <div class="cast-image">
+             <img src="images/cast/ファイル名.jpg" alt="キャスト名" />
+           </div>
+           <div class="cast-info">
+             <div class="cast-name">キャスト名</div>
+             <div class="cast-chara">キャラ名（通常）</div>
+           </div>
+         </div>
+         ===================================================== -->
+    <div class="cast-grid" id="cast-grid">
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ロア.jpg" alt="ロア" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ロア</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/モカ.jpg" alt="モカ" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">モカ</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ソルテ.jpg" alt="ソルテ" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ソルテ</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ユウキ・アントレー.jpg" alt="ユウキ・アントレー" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ユウキ・アントレー</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ダリア.jpg" alt="ダリア" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ダリア</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ヨナ.jpg" alt="ヨナ" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ヨナ</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ロサ・ノワール.jpg" alt="ロサ・ノワール" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ロサ・ノワール</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/ローネ.jpg" alt="ローネ" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">ローネ</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/アニス.jpg" alt="アニス" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">アニス</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/スリジエ・ルクレール.jpg" alt="スリジエ・ルクレール" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">スリジエ・ルクレール</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/聖天天使スカイローズ.jpg" alt="聖天天使スカイローズ" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">聖天天使スカイローズ</div>
+        </div>
+      </div>
+
+      <div class="cast-card reveal">
+        <div class="cast-image">
+          <img src="images/cast/澄田心.jpg" alt="澄田心" onerror="this.closest('.cast-image').innerHTML='<div class=\'cast-image-placeholder\'>🦇</div>'" />
+        </div>
+        <div class="cast-info">
+          <div class="cast-name">澄田心</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Campaign -->
+<section id="campaign">
+  <div class="container">
+    <h2 class="section-title reveal">
+      <span>CAMPAIGN</span>
+      リポストキャンペーン
+    </h2>
+    <div class="divider"></div>
+    <div class="campaign-inner reveal">
+      <p class="campaign-title">🦇 リポストキャンペーン開催中！</p>
+      <div class="campaign-cards">
+        <div class="campaign-item">
+          <h4>📌 参加方法</h4>
+          <p>
+            公式アカウントを<strong style="color:#fff">フォロー</strong>＆<br />
+            対象ポストを<strong style="color:#fff">リポスト</strong>すると<br />
+            抽選で <strong style="color:var(--pink-light); font-size:1.1em">2名様</strong> をイベントにご招待！
+          </p>
+        </div>
+        <div class="campaign-item">
+          <h4>🌟 当選特典</h4>
+          <p>
+            通常はランダム制ですが、<br />
+            RPキャンペーン特典として<br />
+            <strong style="color:var(--pink-light)">少女たちを指名</strong>していただけます！
+          </p>
+        </div>
+      </div>
+      <div class="campaign-note">
+        <strong>注意事項</strong><br />
+        応募者多数の場合、抽選となります。<br />
+        抽選結果は当日<strong> 20:00 まで</strong>に公式アカウントよりDMをお送りします。<br />
+        その他お問い合わせは公式アカウントのDMにてご連絡ください。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Notice -->
+<section id="notice">
+  <div class="container">
+    <h2 class="section-title reveal">
+      <span>NOTICE</span>
+      注意事項
+    </h2>
+    <div class="divider"></div>
+    <div class="notice-box reveal">
+      <ul>
+        <li>
+          他者への迷惑行為、および暴力行為<br />
+          <small style="color:var(--text-sub)">※イベント中の当キャスト側の行動や言動につきましては、ロールプレイに沿った内容となりますので予めご了承ください</small>
+        </li>
+        <li>イベントの進行を妨害する行為</li>
+        <li>イベント中のキャスト・スタッフへのフレンド申請、許可のないお触り、つきまとい、誹謗中傷や公序良俗に反する行為</li>
+        <li>許可のない配信、録画、撮影</li>
+        <li>
+          イベント中のアバターの変更、過度なパーティクルやギミックの使用、人型以外のアバター、NFSWアバター、違法アバター、版権アバター、低身長アバターや高身長アバターの使用<br />
+          <small style="color:var(--text-sub)">（60cm〜2mの範囲）</small>
+        </li>
+        <li>
+          高負荷が予想されますのでアバターダウンロードサイズは50MBまででお願いいたします。<br />
+          変更が必要な場合は入室前にこちらで切り替え願います。
+        </li>
+      </ul>
+      <p style="margin-top:1.6rem; padding-top:1.4rem; border-top:1px solid rgba(176,106,255,.2); font-size:.88rem; line-height:1.9; color:var(--text-sub);">
+        上記までの注意事項や我々の指示に従っていただけない方、過去に禁止行為など報告のあった方、泥酔されている方など、悪影響が及ぼされると考えられた場合は、予告なく退出いただきます。ご了承ください。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- After party -->
+<section id="after">
+  <div class="container">
+    <h2 class="section-title reveal">
+      <span>AFTER PARTY</span>
+      アフター案内
+    </h2>
+    <div class="divider"></div>
+    <div class="notice-box reveal" style="max-width:680px;">
+      <p style="font-size:.95rem; line-height:2; color:var(--text-main); margin-bottom:1.4rem;">
+        営業後に公式グループのインスタンスとしてアフター会場が開かれます。<br />
+        あらかじめ公式グループに参加のうえ、アフター開催のポスト等をご確認のうえインスタンスにJoinしてください。
+      </p>
+      <a href="https://vrc.group/IKRP.4845" target="_blank" rel="noopener noreferrer"
+         style="display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,var(--purple-main),var(--pink-main)); color:#fff; font-size:.92rem; font-weight:700; letter-spacing:.06em; padding:.75rem 1.6rem; border-radius:100px; text-decoration:none; box-shadow:0 4px 20px rgba(123,47,255,.4);">
+        🦇 公式グループに参加する
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <img src="images/logo.png" alt="いくりぷ" class="footer-logo" onerror="this.style.display='none'" />
+  <br />
+  <a href="https://x.com/DFB_Eclipse" target="_blank" rel="noopener noreferrer" class="twitter-btn">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    公式 X（Twitter）
+  </a>
+  <p class="footer-copy">© 闇堕ち少女酒場いくりぷ All rights reserved.</p>
+</footer>
+
+<script>
+  /* ===== Stars ===== */
+  (function() {
+    const container = document.getElementById('stars');
+    const count = window.innerWidth < 600 ? 60 : 120;
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.cssText = `
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        --d:${2+Math.random()*4}s;
+        --delay:-${Math.random()*5}s;
+        opacity:${.2+Math.random()*.8};
+        width:${Math.random()<.15?3:Math.random()<.5?2:1}px;
+        height:${Math.random()<.15?3:Math.random()<.5?2:1}px;
+      `;
+      container.appendChild(s);
+    }
+  })();
+
+  /* ===== Scroll reveal ===== */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ===== Lightbox ===== */
+  const lightbox    = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lbClose     = document.getElementById('lightbox-close');
+
+  function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    lightboxImg.src = '';
+  }
+
+  // Click cast card to open
+  document.querySelectorAll('.cast-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const img = card.querySelector('.cast-image img');
+      if (img && img.complete && img.naturalWidth > 0) {
+        openLightbox(img.src, img.alt);
+      }
+    });
+  });
+
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+</body>
+</html>
