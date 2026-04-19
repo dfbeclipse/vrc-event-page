@@ -972,15 +972,18 @@
 
     setTimeout(() => {
       currentCastIndex = nextIndex;
-      // cur に最終画像を設定して位置リセット（next は画面外へ）
-      lbImgCur.src  = cast.image;
-      lbImgCur.alt  = cast.name;
-      lbImgCur.style.transition  = 'none';
-      lbImgCur.style.transform   = 'translateX(0)';
-      lbImgNext.style.transition = 'none';
-      lbImgNext.style.transform  = `translateX(${inX}px)`;
-      lbImgNext.src = '';
-      lbAnimating = false;
+      // ① cur を裏でセンターに戻し src を更新（lbImgNext z-index:2 が上に被さっている）
+      lbImgCur.style.transition = 'none';
+      lbImgCur.style.transform  = 'translateX(0)';
+      lbImgCur.src = cast.image;
+      lbImgCur.alt = cast.name;
+      // ② 2フレーム後に lbImgNext を退場（cur のデコードを待ってからフラッシュなく切替）
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        lbImgNext.style.transition = 'none';
+        lbImgNext.style.transform  = `translateX(${inX}px)`;
+        lbImgNext.src = '';
+        lbAnimating = false;
+      }));
     }, 260);
   }
 
@@ -1074,16 +1077,20 @@
 
       setTimeout(() => {
         currentCastIndex = finalIndex;
-        lbImgCur.src  = finalCast.image;
-        lbImgCur.alt  = finalCast.name;
-        lbImgCur.style.transition  = 'none';
-        lbImgCur.style.transform   = 'translateX(0)';
-        lbImgNext.style.transition = 'none';
-        lbImgNext.style.transform  = `translateX(${inX}px)`;
-        lbImgNext.src = '';
-        swipePreparedDir = null;
-        swipeNextIndex   = -1;
-        lbAnimating = false;
+        // ① cur を裏でセンターに戻し src を更新（lbImgNext が上に被さっている）
+        lbImgCur.style.transition = 'none';
+        lbImgCur.style.transform  = 'translateX(0)';
+        lbImgCur.src = finalCast.image;
+        lbImgCur.alt = finalCast.name;
+        // ② 2フレーム後に lbImgNext を退場（デコード待ち）
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          lbImgNext.style.transition = 'none';
+          lbImgNext.style.transform  = `translateX(${inX}px)`;
+          lbImgNext.src = '';
+          swipePreparedDir = null;
+          swipeNextIndex   = -1;
+          lbAnimating = false;
+        }));
       }, 220);
     } else {
       // 閾値未満：スナップバック
