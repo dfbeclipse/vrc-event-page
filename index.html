@@ -280,6 +280,7 @@
       inset: 0;
       z-index: 1000;
       background: rgba(0, 0, 0, .88);
+      overflow: hidden;
       align-items: center;
       justify-content: center;
       padding: 1rem;
@@ -895,8 +896,10 @@
   function openLightbox(index) {
     currentCastIndex = index;
     const cast = castData[index];
-    lightboxImg.src  = cast.image;
-    lightboxImg.alt  = cast.name;
+    lightboxImg.src = cast.image;
+    lightboxImg.alt = cast.name;
+    lightboxImg.style.transition = 'none';
+    lightboxImg.style.transform  = 'translateX(0)';
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -907,46 +910,106 @@
     lightboxImg.src = '';
   }
 
-  function showPrev() {
-    const i = (currentCastIndex - 1 + castData.length) % castData.length;
-    openLightbox(i);
+  // スライドアニメーション共通処理
+  function slideAnimate(nextIndex, direction) {
+    const vw   = window.innerWidth;
+    const outX = direction === 'next' ? -vw :  vw;
+    const inX  = direction === 'next' ?  vw : -vw;
+
+    lightboxImg.style.transition = 'transform .25s ease';
+    lightboxImg.style.transform  = `translateX(${outX}px)`;
+
+    setTimeout(() => {
+      currentCastIndex = nextIndex;
+      const cast = castData[nextIndex];
+      lightboxImg.src = cast.image;
+      lightboxImg.alt = cast.name;
+      lightboxImg.style.transition = 'none';
+      lightboxImg.style.transform  = `translateX(${inX}px)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        lightboxImg.style.transition = 'transform .25s ease';
+        lightboxImg.style.transform  = 'translateX(0)';
+      }));
+    }, 250);
   }
 
+  function showPrev() {
+    slideAnimate((currentCastIndex - 1 + castData.length) % castData.length, 'prev');
+  }
   function showNext() {
-    const i = (currentCastIndex + 1) % castData.length;
-    openLightbox(i);
+    slideAnimate((currentCastIndex + 1) % castData.length, 'next');
   }
 
   lbClose.addEventListener('click', closeLightbox);
   lbPrev.addEventListener('click', e => { e.stopPropagation(); showPrev(); });
   lbNext.addEventListener('click', e => { e.stopPropagation(); showNext(); });
 
-  // 画像クリック or 背景クリックで閉じる
   lightboxImg.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
 
   document.addEventListener('keydown', e => {
     if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape')      closeLightbox();
-    if (e.key === 'ArrowLeft')   showPrev();
-    if (e.key === 'ArrowRight')  showNext();
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowLeft')  showPrev();
+    if (e.key === 'ArrowRight') showNext();
   });
 
-  // タッチスワイプ（モバイル）
+  // タッチスワイプ：ドラッグ中は指に追従、離したらスライドアニメーション
   let touchStartX = 0;
   let touchStartY = 0;
+  let swipeDir    = null;
+
   lightbox.addEventListener('touchstart', e => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    swipeDir = null;
+    lightboxImg.style.transition = 'none';
   }, { passive: true });
+
+  lightbox.addEventListener('touchmove', e => {
+    if (!lightbox.classList.contains('open')) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if (swipeDir === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+      swipeDir = Math.abs(dx) >= Math.abs(dy) ? 'h' : 'v';
+    }
+    if (swipeDir === 'h') {
+      lightboxImg.style.transform = `translateX(${dx}px)`;
+    }
+  }, { passive: true });
+
   lightbox.addEventListener('touchend', e => {
     if (!lightbox.classList.contains('open')) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
-    const dy = e.changedTouches[0].clientY - touchStartY;
-    // 縦方向より横方向が大きい場合のみスワイプと判定（閾値50px）
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-      if (dx < 0) showNext();
-      else        showPrev();
+
+    if (swipeDir === 'h' && Math.abs(dx) > 50) {
+      // 閾値超え：スライドアウト→次/前の画像をスライドイン
+      const direction = dx < 0 ? 'next' : 'prev';
+      const vw   = window.innerWidth;
+      const outX = dx < 0 ? -vw : vw;
+      const inX  = dx < 0 ?  vw : -vw;
+      const nextIndex = direction === 'next'
+        ? (currentCastIndex + 1) % castData.length
+        : (currentCastIndex - 1 + castData.length) % castData.length;
+
+      lightboxImg.style.transition = 'transform .25s ease';
+      lightboxImg.style.transform  = `translateX(${outX}px)`;
+      setTimeout(() => {
+        currentCastIndex = nextIndex;
+        const cast = castData[nextIndex];
+        lightboxImg.src = cast.image;
+        lightboxImg.alt = cast.name;
+        lightboxImg.style.transition = 'none';
+        lightboxImg.style.transform  = `translateX(${inX}px)`;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          lightboxImg.style.transition = 'transform .25s ease';
+          lightboxImg.style.transform  = 'translateX(0)';
+        }));
+      }, 250);
+    } else {
+      // 閾値未満：元の位置にスナップバック
+      lightboxImg.style.transition = 'transform .25s ease';
+      lightboxImg.style.transform  = 'translateX(0)';
     }
   }, { passive: true });
 
