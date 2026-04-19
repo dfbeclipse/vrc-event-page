@@ -1,17 +1,32 @@
 @echo off
+
+:: ============================================================
+:: EDIT HERE: path after User Profile Folder
+:: ============================================================
+set REL_PATH=Desktop\vrc-event-page
+:: ============================================================
+
 set PORT=8001
-set DIR=C:\Users\amane\Desktop\vrc-event-page\.claude\worktrees\flamboyant-dirac
+set DIR=%USERPROFILE%\%REL_PATH%
 set CHROME="C:\Program Files\Google\Chrome\Application\chrome.exe"
+
+if not exist "%DIR%" (
+    echo ERROR: Directory not found:
+    echo   %DIR%
+    echo Please check the REL_PATH setting in this script.
+    pause
+    exit /b 1
+)
 
 where npx >nul 2>&1
 if %errorlevel% == 0 (
-    start "" cmd /k "cd /d %DIR% && npx serve . --listen %PORT%"
+    start "" cmd /k "cd /d "%DIR%" && npx serve . --listen %PORT%"
     goto OPEN
 )
 
 where python >nul 2>&1
 if %errorlevel% == 0 (
-    start "" cmd /k "cd /d %DIR% && python -m http.server %PORT%"
+    start "" cmd /k "cd /d "%DIR%" && python -m http.server %PORT%"
     goto OPEN
 )
 
