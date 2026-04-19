@@ -932,6 +932,24 @@
     if (e.key === 'ArrowRight')  showNext();
   });
 
+  // タッチスワイプ（モバイル）
+  let touchStartX = 0;
+  let touchStartY = 0;
+  lightbox.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  lightbox.addEventListener('touchend', e => {
+    if (!lightbox.classList.contains('open')) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    // 縦方向より横方向が大きい場合のみスワイプと判定（閾値50px）
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx < 0) showNext();
+      else        showPrev();
+    }
+  }, { passive: true });
+
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
