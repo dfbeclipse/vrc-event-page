@@ -1,0 +1,102 @@
+window.CAST_DATA = [
+  {
+    "order": 10,
+    "name": "ロア",
+    "image": "images/cast/010_ロア.jpg"
+  },
+  {
+    "order": 20,
+    "name": "モカ",
+    "image": "images/cast/020_モカ.jpg"
+  },
+  {
+    "order": 30,
+    "name": "ソルテ",
+    "image": "images/cast/030_ソルテ.jpg"
+  },
+  {
+    "order": 40,
+    "name": "ユウキ・アントレー",
+    "image": "images/cast/040_ユウキ・アントレー.jpg"
+  },
+  {
+    "order": 50,
+    "name": "ダリア",
+    "image": "images/cast/050_ダリア.jpg"
+  },
+  {
+    "order": 60,
+    "name": "ヨナ",
+    "image": "images/cast/060_ヨナ.jpg"
+  },
+  {
+    "order": 70,
+    "name": "ロサ・ノワール",
+    "image": "images/cast/070_ロサ・ノワール.jpg"
+  },
+  {
+    "order": 80,
+    "name": "ローネ",
+    "image": "images/cast/080_ローネ.jpg"
+  },
+  {
+    "order": 90,
+    "name": "アニス",
+    "image": "images/cast/090_アニス.jpg"
+  },
+  {
+    "order": 100,
+    "name": "スリジエ・ルクレール",
+    "image": "images/cast/100_スリジエ・ルクレール.jpg"
+  },
+  {
+    "order": 110,
+    "name": "聖天天使スカイローズ",
+    "image": "images/cast/110_聖天天使スカイローズ.jpg"
+  },
+  {
+    "order": 120,
+    "name": "雪",
+    "image": "images/cast/120_雪.jpg"
+  },
+  {
+    "order": 130,
+    "name": "ましろ",
+    "image": "images/cast/130_ましろ.jpg"
+  },
+  {
+    "order": 140,
+    "name": "加瀬みらい",
+    "image": "images/cast/140_加瀬みらい.jpg"
+  },
+  {
+    "order": 150,
+    "name": "鍵宮いとは",
+    "image": "images/cast/150_鍵宮いとは.jpg"
+  },
+  {
+    "order": 160,
+    "name": "エリシア",
+    "image": "images/cast/160_エリシア.jpg"
+  },
+  {
+    "order": 170,
+    "name": "ウルメリア",
+    "image": "images/cast/170_ウルメリア.jpg"
+  },
+  {
+    "order": 180,
+    "name": "ミリネ",
+    "image": "images/cast/180_ミリネ.jpg"
+  },
+  {
+    "order": 190,
+    "name": "アデル",
+    "image": "images/cast/190_アデル.jpg"
+  },
+  {
+    "order": 200,
+    "name": "澄田心",
+    "image": "images/cast/200_澄田心.jpg"
+  }
+];
