@@ -972,18 +972,23 @@
 
     setTimeout(() => {
       currentCastIndex = nextIndex;
-      // ① cur を裏でセンターに戻し src を更新（lbImgNext z-index:2 が上に被さっている）
+      // cur を裏でセンターに戻す（lbImgNext z-index:2 が上に被さっているので非表示）
       lbImgCur.style.transition = 'none';
       lbImgCur.style.transform  = 'translateX(0)';
-      lbImgCur.src = cast.image;
-      lbImgCur.alt = cast.name;
-      // ② 2フレーム後に lbImgNext を退場（cur のデコードを待ってからフラッシュなく切替）
-      requestAnimationFrame(() => requestAnimationFrame(() => {
+      // lbImgNext を退場させるコールバック（cur のデコード完了後に呼ぶ）
+      const revealCur = () => {
+        lbImgCur.onload = lbImgCur.onerror = null;
         lbImgNext.style.transition = 'none';
         lbImgNext.style.transform  = `translateX(${inX}px)`;
         lbImgNext.src = '';
         lbAnimating = false;
-      }));
+      };
+      lbImgCur.onload  = revealCur;
+      lbImgCur.onerror = revealCur;
+      lbImgCur.src = cast.image;
+      lbImgCur.alt = cast.name;
+      // キャッシュ済みなら即時（onload が発火しない場合の保険）
+      if (lbImgCur.complete) revealCur();
     }, 260);
   }
 
@@ -1077,20 +1082,24 @@
 
       setTimeout(() => {
         currentCastIndex = finalIndex;
-        // ① cur を裏でセンターに戻し src を更新（lbImgNext が上に被さっている）
+        // cur を裏でセンターに戻す（lbImgNext が上に被さっているので非表示）
         lbImgCur.style.transition = 'none';
         lbImgCur.style.transform  = 'translateX(0)';
-        lbImgCur.src = finalCast.image;
-        lbImgCur.alt = finalCast.name;
-        // ② 2フレーム後に lbImgNext を退場（デコード待ち）
-        requestAnimationFrame(() => requestAnimationFrame(() => {
+        // cur のデコード完了後に lbImgNext を退場
+        const revealCur = () => {
+          lbImgCur.onload = lbImgCur.onerror = null;
           lbImgNext.style.transition = 'none';
           lbImgNext.style.transform  = `translateX(${inX}px)`;
           lbImgNext.src = '';
           swipePreparedDir = null;
           swipeNextIndex   = -1;
           lbAnimating = false;
-        }));
+        };
+        lbImgCur.onload  = revealCur;
+        lbImgCur.onerror = revealCur;
+        lbImgCur.src = finalCast.image;
+        lbImgCur.alt = finalCast.name;
+        if (lbImgCur.complete) revealCur();
       }, 220);
     } else {
       // 閾値未満：スナップバック
