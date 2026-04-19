@@ -124,7 +124,7 @@ start-local-httpserver.bat をサンプルとして置いてます
 7. 自動デプロイの仕組み
 GitHubのファイルを更新すると、Netlifyが自動検知してサイトが約4秒で更新されます。
 ターミナルやコマンド操作は一切不要です。すべてGitHubのウェブサイト上で完結します。
-デプロイ確認：https://app.netlify.com → vrc-eclips → Deploys
+デプロイ確認：https://app.netlify.com → vrc-eclipse → Deploys
 公開サイト確認：https://vrc-eclipse.netlify.app/
 
 8. Netlify 無料枠の制限
