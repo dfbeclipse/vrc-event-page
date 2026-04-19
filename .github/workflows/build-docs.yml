@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - "index.html"
+      - "attending-cast.html"
       - "data/index.css"
       - "data/index.js"
-      - "data/cast.json"
+      - "data/cast-data.js"
+      - "data/attending-cast.js"
       - "images/cast/**"
       - "images/logo.png"
       - "images/title.png"
@@ -44,7 +46,7 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Generate cast.json
+      - name: Generate cast data
         run: |
           node scripts/generate-cast-json.js
 
@@ -55,12 +57,14 @@ jobs:
           mkdir -p docs/images
           mkdir -p docs/images/cast
           cp index.html docs/
+          cp attending-cast.html docs/
           cp manifest.webmanifest docs/
           cp robots.txt docs/
           cp sitemap.xml docs/
           cp data/index.css docs/data/
           cp data/index.js docs/data/
-          cp data/cast.json docs/data/
+          cp data/cast-data.js docs/data/
+          cp data/attending-cast.js docs/data/
           cp images/logo.png docs/images/
           cp images/title.png docs/images/
           cp images/cast-group.jpg docs/images/
@@ -71,7 +75,7 @@ jobs:
           import os
 
           site_url = os.environ["SITE_URL"].rstrip("/")
-          for relative_path in ("docs/index.html", "docs/manifest.webmanifest", "docs/robots.txt", "docs/sitemap.xml"):
+          for relative_path in ("docs/index.html", "docs/attending-cast.html", "docs/manifest.webmanifest", "docs/robots.txt", "docs/sitemap.xml"):
               path = Path(relative_path)
               path.write_text(
                   path.read_text(encoding="utf-8").replace("__SITE_URL__", site_url),

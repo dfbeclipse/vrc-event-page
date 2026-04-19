@@ -14,7 +14,7 @@ vrc-event-page/
 |- robots.txt
 |- sitemap.xml
 |- data/
-|  |- cast.json
+|  |- cast-data.js
 |  |- index.css
 |  `- index.js
 |- images/
@@ -53,8 +53,8 @@ NNN_名前.jpg
 
 ルール:
 - `NNN_` は表示順です。
-- `scripts/generate-cast-json.js` が `data/cast.json` を生成します。
-- `data/cast.json` は生成物なので手で編集しないでください。
+- `scripts/generate-cast-json.js` が `data/cast-data.js` を生成します。
+- `data/cast-data.js` は生成物なので手で編集しないでください。
 - 生成時は Unicode escape で書き出すため、文字コード差異に比較的強いです。
 
 ## 画像メモ
@@ -79,7 +79,7 @@ GitHub Pages を GitHub Actions でデプロイしています。
 - `.github/workflows/build-docs.yml`
 
 処理内容:
-1. `data/cast.json` を生成
+1. `data/cast-data.js` を生成
 2. 配備用ファイルを `docs/` に組み立て
 3. `__SITE_URL__` を実際の公開 URL に置換
 4. Pages artifact をアップロード

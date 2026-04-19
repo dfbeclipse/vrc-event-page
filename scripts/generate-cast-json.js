@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const castDir = path.join(__dirname, '../images/cast');
-const outputJson = path.join(__dirname, '../data/cast.json');
+const outputJs = path.join(__dirname, '../data/cast-data.js');
 
 function getCastList() {
 	const files = fs.readdirSync(castDir).filter(file => file.endsWith('.jpg'));
@@ -23,12 +23,11 @@ function getCastList() {
 	return numbered;
 }
 
-function writeCastJson(castList) {
-	const jsonStr = JSON.stringify(castList, null, 2).replace(/[^\u0000-\u007F]/g, char => {
-		return `\\u${ char.charCodeAt(0).toString(16).padStart(4, '0') }`;
-	});
-	fs.writeFileSync(outputJson, jsonStr, 'utf8');
-	console.log('Updated data/cast.json');
+function writeCastDataJs(castList) {
+	const jsStr = `window.CAST_DATA = ${JSON.stringify(castList, null, 2)};\n`;
+	fs.writeFileSync(outputJs, jsStr, 'utf8');
+	console.log('Updated data/cast-data.js');
 }
 
-writeCastJson(getCastList());
+const castList = getCastList();
+writeCastDataJs(castList);

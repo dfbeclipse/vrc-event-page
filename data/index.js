@@ -46,20 +46,14 @@ const observer = new IntersectionObserver(entries => {
 	});
 }, { threshold: 0.12 });
 
-/* ===== Cast: JSON load & render ===== */
+/* ===== Cast data load & render ===== */
 let castData = [];
 let currentCastIndex = 0;
 let lastFocusedElement = null;
 
-async function loadCast() {
-	try {
-		const res = await fetch('data/cast.json');
-		castData = await res.json();
-		castData.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-	} catch (error) {
-		castData = [];
-	}
-
+function loadCast() {
+	castData = Array.isArray(window.CAST_DATA) ? [...window.CAST_DATA] : [];
+	castData.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 	renderCast();
 }
 
