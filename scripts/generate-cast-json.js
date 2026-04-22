@@ -5,11 +5,11 @@ const castDir = path.join(__dirname, '../images/cast');
 const outputJs = path.join(__dirname, '../data/cast-data.js');
 
 function getCastList() {
-	const files = fs.readdirSync(castDir).filter(file => file.endsWith('.jpg')||file.endsWith('.png'));
+	const files = fs.readdirSync(castDir).filter(file => file.match(/\.(jpg|png)$/i));
 	const numbered = [];
 
 	files.forEach(file => {
-		const match = file.match(/^([0-9]+)_(.+)\.jpg$/);
+		const match = file.match(/^([0-9]+)_(.+)\.(jpg|png)$/i);
 		if (!match) return;
 
 		numbered.push({
