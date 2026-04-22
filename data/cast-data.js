@@ -98,5 +98,15 @@ window.CAST_DATA = [
     "order": 200,
     "name": "澄田心",
     "image": "images/cast/200_澄田心.jpg"
+  },
+  {
+    "order": 210,
+    "name": "被検体051（まるこい）",
+    "image": "images/cast/210_被検体051（まるこい）.png"
+  },
+  {
+    "order": 220,
+    "name": "カナン",
+    "image": "images/cast/220_カナン.png"
   }
 ];
