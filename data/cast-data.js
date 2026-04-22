@@ -25,9 +25,9 @@ window.CAST_DATA = [
     "image": "images/cast/050_ダリア.jpg"
   },
   {
-    "order": 60,
+    "order": 61,
     "name": "ヨナ",
-    "image": "images/cast/060_ヨナ.jpg"
+    "image": "images/cast/061_ヨナ.jpg"
   },
   {
     "order": 70,
@@ -35,9 +35,9 @@ window.CAST_DATA = [
     "image": "images/cast/070_ロサ・ノワール.jpg"
   },
   {
-    "order": 80,
+    "order": 81,
     "name": "ローネ",
-    "image": "images/cast/080_ローネ.jpg"
+    "image": "images/cast/081_ローネ.jpg"
   },
   {
     "order": 90,
