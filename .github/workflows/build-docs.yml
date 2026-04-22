@@ -74,7 +74,7 @@ jobs:
           cp images/title.png docs/images/
           cp images/cast-group.jpg docs/images/
           cp images/x-logo.svg docs/images/
-          cp images/cast/*.jpg docs/images/cast/
+          cp images/cast/* docs/images/cast/
           python - <<'PY'
           from pathlib import Path
           import os
