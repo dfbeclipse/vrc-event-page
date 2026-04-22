@@ -5,7 +5,7 @@ const castDir = path.join(__dirname, '../images/cast');
 const outputJs = path.join(__dirname, '../data/cast-data.js');
 
 function getCastList() {
-	const files = fs.readdirSync(castDir).filter(file => file.endsWith('.jpg'));
+	const files = fs.readdirSync(castDir).filter(file => file.endsWith('.jpg')||file.endsWith('.png'));
 	const numbered = [];
 
 	files.forEach(file => {
