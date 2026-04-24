@@ -50,6 +50,11 @@ window.CAST_DATA = [
     "image": "images/cast/100_スリジエ・ルクレール.jpg"
   },
   {
+    "order": 100,
+    "name": "スリジエ・ルクレール",
+    "image": "images/cast/100_スリジエ・ルクレール.png"
+  },
+  {
     "order": 110,
     "name": "聖天天使スカイローズ",
     "image": "images/cast/110_聖天天使スカイローズ.jpg"
