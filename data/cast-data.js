@@ -47,11 +47,6 @@ window.CAST_DATA = [
   {
     "order": 100,
     "name": "スリジエ・ルクレール",
-    "image": "images/cast/100_スリジエ・ルクレール.jpg"
-  },
-  {
-    "order": 100,
-    "name": "スリジエ・ルクレール",
     "image": "images/cast/100_スリジエ・ルクレール.png"
   },
   {
