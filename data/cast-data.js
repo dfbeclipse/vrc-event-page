@@ -1,5 +1,10 @@
 window.CAST_DATA = [
   {
+    "order": 10,
+    "name": "ロア",
+    "image": "images/cast/010_ロア.png"
+  },
+  {
     "order": 20,
     "name": "モカ",
     "image": "images/cast/020_モカ.jpg"
