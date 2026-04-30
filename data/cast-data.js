@@ -50,6 +50,11 @@ window.CAST_DATA = [
     "image": "images/cast/100_スリジエ・ルクレール.png"
   },
   {
+    "order": 101,
+    "name": "魔法少女シャインブロッサム",
+    "image": "images/cast/101_魔法少女シャインブロッサム.png"
+  },
+  {
     "order": 110,
     "name": "聖天天使スカイローズ",
     "image": "images/cast/110_聖天天使スカイローズ.jpg"
@@ -98,6 +103,11 @@ window.CAST_DATA = [
     "order": 200,
     "name": "澄田心",
     "image": "images/cast/200_澄田心.jpg"
+  },
+  {
+    "order": 201,
+    "name": "魔法少女ミルキースター",
+    "image": "images/cast/201_魔法少女ミルキースター.png"
   },
   {
     "order": 210,
