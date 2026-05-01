@@ -30,6 +30,11 @@ window.CAST_DATA = [
     "image": "images/cast/061_ヨナ.jpg"
   },
   {
+    "order": 62,
+    "name": "砂原七子",
+    "image": "images/cast/062_砂原七子.jpg"
+  },
+  {
     "order": 70,
     "name": "ロサ・ノワール",
     "image": "images/cast/070_ロサ・ノワール.jpg"
