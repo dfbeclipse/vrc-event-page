@@ -541,14 +541,27 @@ lightbox.addEventListener('touchend', event => {
 
 /* ===== Video player (クリックまで動画を読み込まない) ===== */
 (function () {
-	const thumb    = document.getElementById('video-thumb');
-	const video    = document.getElementById('event-video');
+	const thumb = document.getElementById('video-thumb');
+	const video = document.getElementById('event-video');
 	if (!thumb || !video) return;
 
 	thumb.addEventListener('click', () => {
+		thumb.style.display = 'none';
 		video.src = 'video/Eclipse_01.mp4';
 		video.style.display = 'block';
-		thumb.style.display = 'none';
+
+		// ローカル動画が読み込めない場合は YouTube にフォールバック
+		video.addEventListener('error', () => {
+			video.style.display = 'none';
+			const iframe = document.createElement('iframe');
+			iframe.src = 'https://www.youtube.com/embed/EqE0eIhrWfw?autoplay=1';
+			iframe.title = '闇堕ち少女酒場いくりぷ イベント紹介';
+			iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+			iframe.allowFullscreen = true;
+			iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;';
+			video.parentElement.appendChild(iframe);
+		}, { once: true });
+
 		video.play().catch(() => {}); // autoplay ポリシーでブロックされても無視
 	}, { once: true });
 })();

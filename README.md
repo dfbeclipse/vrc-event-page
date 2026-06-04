@@ -9,20 +9,28 @@ VRChat のロールプレイイベントサイトです。
 
 ```text
 vrc-event-page/
-|- index.html
+|- index.html              # メインページ
+|- attending-cast.html     # 出演キャスト一覧ページ
 |- manifest.webmanifest
 |- robots.txt
 |- sitemap.xml
+|- start-local-httpserver.bat
 |- data/
-|  |- cast-data.js
-|  |- index.css
-|  `- index.js
+|  |- cast-data.js         # キャストデータ（generate-cast-json.js が自動生成）
+|  |- attending-cast.js    # 出演キャストページ用スクリプト
+|  |- index.css            # サイト共通スタイル
+|  `- index.js             # サイト共通スクリプト
 |- images/
-|  |- cast/
-|  |- cast-group.jpg
+|  |- cast/                # キャスト個別画像（NNN_名前.jpg / .png）
+|  |- gallery/             # ギャラリー画像（01.jpg, 02.jpg … 連番）
+|  |- cast-group.jpg       # キャスト集合画像（旧）
+|  |- cast-group2.png      # キャスト集合画像（現在使用中）
 |  |- logo.png
 |  |- title.png
 |  `- x-logo.svg
+|- video/
+|  |- Eclipse_01.mp4       # イベント紹介動画（※Git管理対象外、要別途配置）
+|  `- thumbnail.png        # 動画サムネイル
 |- scripts/
 |  `- generate-cast-json.js
 `- .github/
@@ -36,18 +44,19 @@ vrc-event-page/
 
 ## キャスト画像の追加方法
 
-`images/cast/` に JPG ファイルを追加します。
+`images/cast/` に JPG / PNG ファイルを追加します。
 
 ファイル名の形式:
 
 ```text
 NNN_名前.jpg
+NNN_名前.png
 ```
 
 例:
 
 ```text
-010_ロア.jpg
+010_ロア.png
 020_モカ.jpg
 ```
 
@@ -57,13 +66,42 @@ NNN_名前.jpg
 - `data/cast-data.js` は生成物なので手で編集しないでください。
 - 生成時は Unicode escape で書き出すため、文字コード差異に比較的強いです。
 
+## ギャラリー画像の追加方法
+
+`images/gallery/` に連番ファイルを追加するだけで自動表示されます。
+
+ファイル名の形式:
+
+```text
+01.jpg または 01.png（.jpg を優先）
+02.jpg
+03.jpg
+…
+```
+
+ルール:
+- 連番が途切れた時点で読み込みを終了します（途中に欠番を作らないこと）。
+- .jpg が見つからない場合は .png を試みます。
+- JSON や設定ファイルの編集は不要です。
+
+## 動画プレイヤー
+
+- 動画ファイル: `video/Eclipse_01.mp4`
+- サムネイル: `video/thumbnail.png`
+- 再生ボタンをクリックしてから動画データを読み込む遅延ロード方式（転送量削減）。
+- **ローカル動画が存在しない場合は YouTube（`EqE0eIhrWfw`）に自動フォールバック**します。
+
+> ⚠️ `video/*.mp4` は GitHub の 100MB 上限を超えるため `.gitignore` で除外されています。
+> デプロイ先サーバーには動画ファイルを別途アップロードしてください。
+
 ## 画像メモ
 
 現在の用途:
 - `images/logo.png`: サイトロゴ、favicon、manifest 用アイコン元画像
 - `images/title.png`: ヒーロー画像、現在の SNS 共有画像
-- `images/cast-group.jpg`: キャスト集合画像
-- `images/cast/*.jpg`: キャスト一覧画像
+- `images/cast-group2.png`: キャスト集合画像（ヒーロー直下に表示）
+- `images/cast/*.jpg / .png`: キャスト一覧画像
+- `images/gallery/*.jpg / .png`: ギャラリーセクション画像
 
 今後の改善候補:
 - SNS 共有用の専用 OGP 画像を `images/ogp.png` などで用意する
@@ -109,7 +147,7 @@ https://{owner}.github.io/{repo}
 
 - `docs/` はデプロイ用生成物です。
 - `.gitignore` に入っているため、通常は手で管理しません。
-- 編集対象は `index.html`、`data/`、`images/`、`scripts/`、`.github/workflows/` です。
+- 編集対象は `index.html`、`data/`、`images/`、`video/`、`scripts/`、`.github/workflows/` です。
 
 ## 補足
 
