@@ -8,12 +8,15 @@ on:
       - "attending-cast.html"
       - "data/index.css"
       - "data/index.js"
-      - "data/attending-cast.js"  # ← cast-data.js を削除
+      - "data/attending-cast.js"
       - "images/cast/**"
+      - "images/gallery/**"
       - "images/logo.png"
       - "images/title.png"
       - "images/cast-group.jpg"
+      - "images/cast-group2.png"
       - "images/x-logo.svg"
+      - "video/thumbnail.png"
       - "manifest.webmanifest"
       - "robots.txt"
       - "sitemap.xml"
@@ -61,6 +64,8 @@ jobs:
           mkdir -p docs/data
           mkdir -p docs/images
           mkdir -p docs/images/cast
+          mkdir -p docs/images/gallery
+          mkdir -p docs/video
           cp index.html docs/
           cp attending-cast.html docs/
           cp manifest.webmanifest docs/
@@ -73,8 +78,11 @@ jobs:
           cp images/logo.png docs/images/
           cp images/title.png docs/images/
           cp images/cast-group.jpg docs/images/
+          cp images/cast-group2.png docs/images/
           cp images/x-logo.svg docs/images/
           cp images/cast/* docs/images/cast/
+          cp images/gallery/* docs/images/gallery/
+          cp video/thumbnail.png docs/video/
           python - <<'PY'
           from pathlib import Path
           import os
