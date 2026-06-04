@@ -67,6 +67,7 @@
       <li><a href="#campaign">キャンペーン</a></li>
       <li><a href="#notice">注意事項</a></li>
       <li><a href="#video">動画</a></li>
+      <li><a href="#gallery">ギャラリー</a></li>
       <li><a href="#after">アフター</a></li>
     </ul>
   </div>
@@ -81,7 +82,7 @@
 
 <!-- Cast group visual (below hero) -->
 <div id="cast-hero">
-  <img src="images/cast-group.jpg" alt="キャスト集合" class="js-hide-cast-hero-on-error" loading="lazy" decoding="async" />
+  <img src="images/cast-group2.png" alt="キャスト集合" class="js-hide-cast-hero-on-error" loading="lazy" decoding="async" />
 </div>
 
 <!-- About / Event Info -->
@@ -227,13 +228,28 @@
     </h2>
     <div class="divider"></div>
     <div class="video-wrap reveal">
-      <iframe
-        src="https://www.youtube.com/embed/EqE0eIhrWfw"
-        title="闇堕ち少女酒場いくりぷ イベント紹介"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      ></iframe>
+      <!-- サムネイル＋再生ボタン（クリックまで動画は読み込まない） -->
+      <div class="video-thumb" id="video-thumb">
+        <img src="video/thumbnail.png" alt="イベント紹介動画" />
+        <button class="video-play-btn" aria-label="動画を再生">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <!-- preload="none" で再生ボタン押下までデータ読み込みなし -->
+      <video id="event-video" controls playsinline preload="none"></video>
     </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery">
+  <div class="container">
+    <h2 class="section-title reveal">
+      <span>GALLERY</span>
+      ギャラリー
+    </h2>
+    <div class="divider"></div>
+    <div class="gallery-grid" id="gallery-grid"></div>
   </div>
 </section>
 

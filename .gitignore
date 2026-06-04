@@ -1,1 +1,5 @@
 docs/
+# 動画ファイルはGitHub 100MB上限を超えるため除外
+video/*.mp4
+video/*.mov
+video/*.avi

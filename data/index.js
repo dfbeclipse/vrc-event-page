@@ -30,9 +30,7 @@ const castHeroImage = document.querySelector('.js-hide-cast-hero-on-error');
 if (castHeroImage) {
 	castHeroImage.addEventListener('error', () => {
 		const castHero = castHeroImage.closest('#cast-hero');
-		if (castHero) {
-			castHero.style.display = 'none';
-		}
+		if (castHero) castHero.style.display = 'none';
 	});
 }
 
@@ -47,8 +45,12 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 
 /* ===== Cast data load & render ===== */
-let castData = [];
-let currentCastIndex = 0;
+let castData    = [];
+let galleryData = [];
+
+// Lightbox shared state
+let lbItems        = [];
+let currentLbIndex = 0;
 let lastFocusedElement = null;
 
 function loadCast() {
@@ -83,7 +85,6 @@ function renderCast() {
 
 		const info = document.createElement('div');
 		info.className = 'cast-info';
-
 		const name = document.createElement('div');
 		name.className = 'cast-name';
 		name.textContent = cast.name;
@@ -91,39 +92,183 @@ function renderCast() {
 
 		card.appendChild(imageWrap);
 		card.appendChild(info);
-		card.addEventListener('click', () => openLightbox(i));
+		card.addEventListener('click', () => openLightbox(i, castData));
 		grid.appendChild(card);
 	});
 }
 
 loadCast();
 
+/* ===== Gallery data load & render ===== */
+function probeImage(url) {
+	return new Promise(resolve => {
+		const img = new Image();
+		img.onload  = () => resolve(true);
+		img.onerror = () => resolve(false);
+		img.src = url;
+	});
+}
+
+async function loadGallery() {
+	const items = [];
+	let i = 1;
+	while (true) {
+		const num    = String(i).padStart(2, '0');
+		const urlJpg = `images/gallery/${ num }.jpg`;
+		const urlPng = `images/gallery/${ num }.png`;
+		if      (await probeImage(urlJpg)) items.push({ image: urlJpg, name: `ギャラリー ${ num }` });
+		else if (await probeImage(urlPng)) items.push({ image: urlPng, name: `ギャラリー ${ num }` });
+		else break;
+		i++;
+	}
+	galleryData = items;
+	renderGallery();
+}
+
+function renderGallery() {
+	const grid = document.getElementById('gallery-grid');
+	if (!grid) return;
+	grid.innerHTML = '';
+
+	if (galleryData.length === 0) {
+		const empty = document.createElement('p');
+		empty.className = 'gallery-empty';
+		empty.textContent = '画像を準備中です…';
+		grid.appendChild(empty);
+		return;
+	}
+
+	galleryData.forEach((item, i) => {
+		const el = document.createElement('div');
+		el.className = 'gallery-item reveal visible';
+		el.setAttribute('role', 'button');
+		el.setAttribute('tabindex', '0');
+		el.setAttribute('aria-label', item.name);
+
+		const img = document.createElement('img');
+		img.src = item.image;
+		img.alt = item.name;
+		img.loading = 'lazy';
+		img.decoding = 'async';
+		el.appendChild(img);
+
+		el.addEventListener('click', () => openLightbox(i, galleryData));
+		el.addEventListener('keydown', e => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				openLightbox(i, galleryData);
+			}
+		});
+		grid.appendChild(el);
+	});
+}
+
+loadGallery();
+
+/* ===== Shooting Stars ===== */
+const SHOOTING_STAR_LTR   = Math.random() < 0.5;
+const SHOOTING_STAR_ANGLE = SHOOTING_STAR_LTR
+	? 33  + (Math.random() * 16 - 8)
+	: 147 + (Math.random() * 16 - 8);
+
+let _shootingStarTimer = null;
+
+function _spawnShootingStar() {
+	const el = document.createElement('div');
+	el.className = 'shooting-star';
+
+	const vw = window.innerWidth;
+	const vh = window.innerHeight;
+
+	const startX = SHOOTING_STAR_LTR
+		? Math.random() * vw * 0.65
+		: vw * 0.35 + Math.random() * vw * 0.65;
+	const startY   = Math.random() * vh * 0.55;
+	const angle    = SHOOTING_STAR_ANGLE + (Math.random() * 30 - 15);
+	const length   = 60  + Math.random() * 200;
+	const travel   = 150 + Math.random() * 550;
+	const duration = (0.5 + Math.random() * 2.0).toFixed(2);
+
+	el.style.cssText = `
+		left:${startX}px;
+		top:${startY}px;
+		width:${length}px;
+		--angle:${angle}deg;
+		--travel:${travel}px;
+		--duration:${duration}s;
+	`;
+
+	document.getElementById('stars').appendChild(el);
+	el.addEventListener('animationend', () => el.remove(), { once: true });
+}
+
+function _scheduleNextStar() {
+	clearTimeout(_shootingStarTimer);
+	const delay = 800 + Math.random() * 2200;
+	_shootingStarTimer = setTimeout(() => {
+		if (!document.hidden) _spawnShootingStar();
+		_scheduleNextStar();
+	}, delay);
+}
+
+document.addEventListener('visibilitychange', () => {
+	if (!document.hidden) _scheduleNextStar();
+});
+
+_scheduleNextStar();
+
 /* ===== Lightbox ===== */
-const lightbox = document.getElementById('lightbox');
-const lbStage = document.getElementById('lb-stage');
-const lbImgCur = document.getElementById('lb-img-cur');
+const lightbox  = document.getElementById('lightbox');
+const lbStage   = document.getElementById('lb-stage');
+const lbImgCur  = document.getElementById('lb-img-cur');
 const lbImgNext = document.getElementById('lb-img-next');
-const lbClose = document.getElementById('lightbox-close');
-const lbPrev = document.getElementById('lb-prev');
-const lbNext = document.getElementById('lb-next');
+const lbClose   = document.getElementById('lightbox-close');
+const lbPrev    = document.getElementById('lb-prev');
+const lbNext    = document.getElementById('lb-next');
 
 function stageW() {
 	return lbStage.offsetWidth || window.innerWidth;
 }
 
-function openLightbox(index) {
-	currentCastIndex = index;
-	lastFocusedElement = document.activeElement;
-	const cast = castData[index];
+function updateLbStageSize(img) {
+	if (!img.naturalWidth || !img.naturalHeight) return;
+	const maxW = Math.floor(window.innerWidth  * 0.9);
+	const maxH = Math.floor(window.innerHeight * 0.92);
+	const ar   = img.naturalWidth / img.naturalHeight;
+	const w    = ar >= maxW / maxH ? maxW : Math.round(maxH * ar);
+	lbStage.style.width = w + 'px';
+}
 
-	lbImgCur.src = cast.image;
-	lbImgCur.alt = cast.name;
+function isGallery() {
+	return lbItems === galleryData;
+}
+
+function openLightbox(index, items) {
+	lbItems        = items;
+	currentLbIndex = index;
+	lastFocusedElement = document.activeElement;
+	const item = lbItems[index];
+
+	lbImgCur.src = item.image;
+	lbImgCur.alt = item.name;
 	lbImgCur.style.transition = 'none';
-	lbImgCur.style.transform = 'translateX(0)';
+	lbImgCur.style.transform  = 'translateX(0)';
+	lbImgCur.style.opacity    = '1';
 
 	lbImgNext.src = '';
 	lbImgNext.style.transition = 'none';
-	lbImgNext.style.transform = 'translateX(100%)';
+	lbImgNext.style.transform  = 'translateX(100%)';
+	lbImgNext.style.opacity    = '1';
+
+	if (lbImgCur.complete && lbImgCur.naturalWidth) {
+		updateLbStageSize(lbImgCur);
+	} else {
+		lbStage.style.width = '';
+		lbImgCur.addEventListener('load', function onLoad() {
+			lbImgCur.removeEventListener('load', onLoad);
+			updateLbStageSize(lbImgCur);
+		});
+	}
 
 	lightbox.classList.add('open');
 	document.body.style.overflow = 'hidden';
@@ -133,75 +278,108 @@ function openLightbox(index) {
 function closeLightbox() {
 	lightbox.classList.remove('open');
 	document.body.style.overflow = '';
-	lbImgCur.src = '';
+	lbImgCur.src  = '';
 	lbImgNext.src = '';
-	if (lastFocusedElement instanceof HTMLElement) {
-		lastFocusedElement.focus();
-	}
+	lbImgCur.style.opacity  = '1';
+	lbImgNext.style.opacity = '1';
+	lbStage.style.width = '';
+	if (lastFocusedElement instanceof HTMLElement) lastFocusedElement.focus();
 }
 
 let lbAnimating = false;
 
+/* ---- キャスト用: スライドアニメーション ---- */
 function slideAnimate(nextIndex, direction) {
 	if (lbAnimating) return;
 	lbAnimating = true;
 
-	const sw = stageW();
-	const outX = direction === 'next' ? -sw : sw;
-	const inX = direction === 'next' ? sw : -sw;
-	const cast = castData[nextIndex];
+	const sw   = stageW();
+	const outX = direction === 'next' ? -sw :  sw;
+	const inX  = direction === 'next' ?  sw : -sw;
+	const item = lbItems[nextIndex];
 
-	lbImgNext.src = cast.image;
-	lbImgNext.alt = cast.name;
+	lbImgNext.src = item.image;
+	lbImgNext.alt = item.name;
 	lbImgNext.style.transition = 'none';
-	lbImgNext.style.transform = `translateX(${ inX }px)`;
+	lbImgNext.style.transform  = `translateX(${ inX }px)`;
 
 	lbImgNext.getBoundingClientRect();
 
-	lbImgCur.style.transition = 'transform .25s ease';
-	lbImgCur.style.transform = `translateX(${ outX }px)`;
+	lbImgCur.style.transition  = 'transform .25s ease';
+	lbImgCur.style.transform   = `translateX(${ outX }px)`;
 	lbImgNext.style.transition = 'transform .25s ease';
-	lbImgNext.style.transform = 'translateX(0)';
+	lbImgNext.style.transform  = 'translateX(0)';
 
 	setTimeout(() => {
-		currentCastIndex = nextIndex;
+		currentLbIndex = nextIndex;
 		lbImgCur.style.transition = 'none';
-		lbImgCur.style.transform = 'translateX(0)';
+		lbImgCur.style.transform  = 'translateX(0)';
 
 		const revealCur = () => {
 			lbImgCur.onload = lbImgCur.onerror = null;
+			updateLbStageSize(lbImgCur);
 			lbImgNext.style.transition = 'none';
-			lbImgNext.style.transform = `translateX(${ inX }px)`;
+			lbImgNext.style.transform  = `translateX(${ inX }px)`;
 			lbImgNext.src = '';
 			lbAnimating = false;
 		};
 
-		lbImgCur.onload = revealCur;
+		lbImgCur.onload  = revealCur;
 		lbImgCur.onerror = revealCur;
-		lbImgCur.src = cast.image;
-		lbImgCur.alt = cast.name;
-
+		lbImgCur.src = item.image;
+		lbImgCur.alt = item.name;
 		if (lbImgCur.complete) revealCur();
 	}, 260);
 }
 
+/* ---- ギャラリー用: フェードアニメーション ---- */
+function fadeAnimate(nextIndex) {
+	if (lbAnimating) return;
+	lbAnimating = true;
+
+	const item = lbItems[nextIndex];
+
+	// フェードアウト
+	lbImgCur.style.transition = 'opacity .18s ease';
+	lbImgCur.style.opacity    = '0';
+
+	setTimeout(() => {
+		currentLbIndex = nextIndex;
+		lbImgCur.style.transition = 'none';
+		lbImgCur.src = item.image;
+		lbImgCur.alt = item.name;
+
+		const fadeIn = () => {
+			lbImgCur.onload = lbImgCur.onerror = null;
+			updateLbStageSize(lbImgCur);
+			// ステージリサイズ後に少し待ってからフェードイン（レイアウト確定を待つ）
+			requestAnimationFrame(() => {
+				lbImgCur.style.transition = 'opacity .22s ease';
+				lbImgCur.style.opacity    = '1';
+				lbAnimating = false;
+			});
+		};
+
+		lbImgCur.onload  = fadeIn;
+		lbImgCur.onerror = fadeIn;
+		if (lbImgCur.complete) fadeIn();
+	}, 180);
+}
+
+/* ---- 方向ナビ（キャスト=スライド / ギャラリー=フェード） ---- */
 function showPrev() {
-	slideAnimate((currentCastIndex - 1 + castData.length) % castData.length, 'prev');
+	const next = (currentLbIndex - 1 + lbItems.length) % lbItems.length;
+	isGallery() ? fadeAnimate(next) : slideAnimate(next, 'prev');
 }
 
 function showNext() {
-	slideAnimate((currentCastIndex + 1) % castData.length, 'next');
+	const next = (currentLbIndex + 1) % lbItems.length;
+	isGallery() ? fadeAnimate(next) : slideAnimate(next, 'next');
 }
 
 lbClose.addEventListener('click', closeLightbox);
-lbPrev.addEventListener('click', event => {
-	event.stopPropagation();
-	showPrev();
-});
-lbNext.addEventListener('click', event => {
-	event.stopPropagation();
-	showNext();
-});
+lbPrev.addEventListener('click', event => { event.stopPropagation(); showPrev(); });
+lbNext.addEventListener('click', event => { event.stopPropagation(); showNext(); });
 lbImgCur.addEventListener('click', closeLightbox);
 lightbox.addEventListener('click', event => {
 	if (event.target === lightbox) closeLightbox();
@@ -209,51 +387,40 @@ lightbox.addEventListener('click', event => {
 
 document.addEventListener('keydown', event => {
 	if (!lightbox.classList.contains('open')) return;
-	if (event.key === 'Escape') closeLightbox();
-	if (event.key === 'ArrowLeft') showPrev();
+	if (event.key === 'Escape')     closeLightbox();
+	if (event.key === 'ArrowLeft')  showPrev();
 	if (event.key === 'ArrowRight') showNext();
-	if (event.key === 'Tab') trapLightboxFocus(event);
+	if (event.key === 'Tab')        trapLightboxFocus(event);
 });
 
 function trapLightboxFocus(event) {
-	const focusable = [
-		lbPrev,
-		lbNext,
-		lbClose
-	].filter(element => element && getComputedStyle(element).display !== 'none');
-
-	if (focusable.length === 0) return;
-
+	const focusable = [lbPrev, lbNext, lbClose]
+		.filter(el => el && getComputedStyle(el).display !== 'none');
+	if (!focusable.length) return;
 	const first = focusable[0];
-	const last = focusable[focusable.length - 1];
-
+	const last  = focusable[focusable.length - 1];
 	if (event.shiftKey && document.activeElement === first) {
-		event.preventDefault();
-		last.focus();
-		return;
-	}
-
-	if (!event.shiftKey && document.activeElement === last) {
-		event.preventDefault();
-		first.focus();
+		event.preventDefault(); last.focus();
+	} else if (!event.shiftKey && document.activeElement === last) {
+		event.preventDefault(); first.focus();
 	}
 }
 
-let touchStartX = 0;
-let touchStartY = 0;
-let swipeDir = null;
-let swipePreparedDir = null;
-let swipeNextIndex = -1;
+/* ===== Touch swipe (lightbox) ===== */
+let touchStartX      = 0;
+let touchStartY      = 0;
+let swipeDir         = null;
+let swipePreparedDir = null; // キャストのスライド用
+let swipeNextIndex   = -1;
 
 lightbox.addEventListener('touchstart', event => {
 	if (lbAnimating) return;
-
 	touchStartX = event.touches[0].clientX;
 	touchStartY = event.touches[0].clientY;
-	swipeDir = null;
+	swipeDir         = null;
 	swipePreparedDir = null;
-	swipeNextIndex = -1;
-	lbImgCur.style.transition = 'none';
+	swipeNextIndex   = -1;
+	lbImgCur.style.transition  = 'none';
 	lbImgNext.style.transition = 'none';
 }, { passive: true });
 
@@ -268,25 +435,32 @@ lightbox.addEventListener('touchmove', event => {
 	}
 	if (swipeDir !== 'h') return;
 
-	const sw = stageW();
+	if (isGallery()) {
+		// ギャラリー: 軽い追従フィードバックのみ（lb-img-next は使わない）
+		lbImgCur.style.transform = `translateX(${ dx * 0.25 }px)`;
+		return;
+	}
+
+	// キャスト: 既存のスライド追従
+	const sw    = stageW();
 	const dxDir = dx <= 0 ? 'next' : 'prev';
 
 	if (swipePreparedDir !== dxDir) {
 		swipePreparedDir = dxDir;
 		if (dxDir === 'next') {
-			swipeNextIndex = (currentCastIndex + 1) % castData.length;
-			lbImgNext.src = castData[swipeNextIndex].image;
-			lbImgNext.alt = castData[swipeNextIndex].name;
+			swipeNextIndex = (currentLbIndex + 1) % lbItems.length;
+			lbImgNext.src = lbItems[swipeNextIndex].image;
+			lbImgNext.alt = lbItems[swipeNextIndex].name;
 			lbImgNext.style.transform = `translateX(${ sw }px)`;
 		} else {
-			swipeNextIndex = (currentCastIndex - 1 + castData.length) % castData.length;
-			lbImgNext.src = castData[swipeNextIndex].image;
-			lbImgNext.alt = castData[swipeNextIndex].name;
+			swipeNextIndex = (currentLbIndex - 1 + lbItems.length) % lbItems.length;
+			lbImgNext.src = lbItems[swipeNextIndex].image;
+			lbImgNext.alt = lbItems[swipeNextIndex].name;
 			lbImgNext.style.transform = `translateX(${ -sw }px)`;
 		}
 	}
 
-	lbImgCur.style.transform = `translateX(${ dx }px)`;
+	lbImgCur.style.transform  = `translateX(${ dx }px)`;
 	lbImgNext.style.transform = dxDir === 'next'
 		? `translateX(${ sw + dx }px)`
 		: `translateX(${ -sw + dx }px)`;
@@ -297,57 +471,86 @@ lightbox.addEventListener('touchend', event => {
 
 	const dx = event.changedTouches[0].clientX - touchStartX;
 
+	if (isGallery()) {
+		// ギャラリー: スナップバックしてからフェード
+		lbImgCur.style.transition = 'transform .15s ease';
+		lbImgCur.style.transform  = 'translateX(0)';
+
+		if (swipeDir === 'h' && Math.abs(dx) > 50) {
+			const nextIdx = dx < 0
+				? (currentLbIndex + 1) % lbItems.length
+				: (currentLbIndex - 1 + lbItems.length) % lbItems.length;
+			setTimeout(() => fadeAnimate(nextIdx), 150);
+		}
+		return;
+	}
+
+	// キャスト: 既存のスライドコミット
 	if (swipeDir === 'h' && Math.abs(dx) > 50 && swipePreparedDir !== null) {
 		lbAnimating = true;
-		const sw = stageW();
-		const outX = dx < 0 ? -sw : sw;
-		const inX = dx < 0 ? sw : -sw;
+		const sw         = stageW();
+		const outX       = dx < 0 ? -sw :  sw;
+		const inX        = dx < 0 ?  sw : -sw;
 		const finalIndex = swipeNextIndex;
-		const finalCast = castData[finalIndex];
+		const finalItem  = lbItems[finalIndex];
 
-		lbImgCur.style.transition = 'transform .2s ease';
-		lbImgCur.style.transform = `translateX(${ outX }px)`;
+		lbImgCur.style.transition  = 'transform .2s ease';
+		lbImgCur.style.transform   = `translateX(${ outX }px)`;
 		lbImgNext.style.transition = 'transform .2s ease';
-		lbImgNext.style.transform = 'translateX(0)';
+		lbImgNext.style.transform  = 'translateX(0)';
 
 		setTimeout(() => {
-			currentCastIndex = finalIndex;
+			currentLbIndex = finalIndex;
 			lbImgCur.style.transition = 'none';
-			lbImgCur.style.transform = 'translateX(0)';
+			lbImgCur.style.transform  = 'translateX(0)';
 
 			const revealCur = () => {
 				lbImgCur.onload = lbImgCur.onerror = null;
+				updateLbStageSize(lbImgCur);
 				lbImgNext.style.transition = 'none';
-				lbImgNext.style.transform = `translateX(${ inX }px)`;
-				lbImgNext.src = '';
+				lbImgNext.style.transform  = `translateX(${ inX }px)`;
+				lbImgNext.src    = '';
 				swipePreparedDir = null;
-				swipeNextIndex = -1;
-				lbAnimating = false;
+				swipeNextIndex   = -1;
+				lbAnimating      = false;
 			};
 
-			lbImgCur.onload = revealCur;
+			lbImgCur.onload  = revealCur;
 			lbImgCur.onerror = revealCur;
-			lbImgCur.src = finalCast.image;
-			lbImgCur.alt = finalCast.name;
+			lbImgCur.src = finalItem.image;
+			lbImgCur.alt = finalItem.name;
 			if (lbImgCur.complete) revealCur();
 		}, 220);
 	} else {
 		lbImgCur.style.transition = 'transform .2s ease';
-		lbImgCur.style.transform = 'translateX(0)';
+		lbImgCur.style.transform  = 'translateX(0)';
 
 		if (swipePreparedDir !== null) {
-			const sw = stageW();
+			const sw    = stageW();
 			const backX = swipePreparedDir === 'next' ? sw : -sw;
 			lbImgNext.style.transition = 'transform .2s ease';
-			lbImgNext.style.transform = `translateX(${ backX }px)`;
-
+			lbImgNext.style.transform  = `translateX(${ backX }px)`;
 			setTimeout(() => {
-				lbImgNext.src = '';
+				lbImgNext.src    = '';
 				swipePreparedDir = null;
-				swipeNextIndex = -1;
+				swipeNextIndex   = -1;
 			}, 220);
 		}
 	}
 }, { passive: true });
+
+/* ===== Video player (クリックまで動画を読み込まない) ===== */
+(function () {
+	const thumb    = document.getElementById('video-thumb');
+	const video    = document.getElementById('event-video');
+	if (!thumb || !video) return;
+
+	thumb.addEventListener('click', () => {
+		video.src = 'video/Eclipse_01.mp4';
+		video.style.display = 'block';
+		thumb.style.display = 'none';
+		video.play().catch(() => {}); // autoplay ポリシーでブロックされても無視
+	}, { once: true });
+})();
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
