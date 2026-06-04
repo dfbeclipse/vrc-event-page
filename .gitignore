@@ -1,5 +1,5 @@
 docs/
-# 動画ファイルはGitHub 100MB上限を超えるため除外
-video/*.mp4
-video/*.mov
-video/*.avi
+# 動画ファイルが100MB超の場合はこちらを有効化
+# video/*.mp4
+# video/*.mov
+# video/*.avi

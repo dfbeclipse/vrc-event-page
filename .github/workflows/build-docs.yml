@@ -16,7 +16,7 @@ on:
       - "images/cast-group.jpg"
       - "images/cast-group2.png"
       - "images/x-logo.svg"
-      - "video/thumbnail.png"
+      - "video/**"
       - "manifest.webmanifest"
       - "robots.txt"
       - "sitemap.xml"
@@ -83,6 +83,7 @@ jobs:
           cp images/cast/* docs/images/cast/
           cp images/gallery/* docs/images/gallery/
           cp video/thumbnail.png docs/video/
+          if [ -f video/Eclipse_01.mp4 ]; then cp video/Eclipse_01.mp4 docs/video/; fi
           python - <<'PY'
           from pathlib import Path
           import os
