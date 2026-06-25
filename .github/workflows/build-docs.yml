@@ -69,7 +69,6 @@ jobs:
       - name: Prepare site directory
         run: |
           rm -rf docs
-          rm -rf images/DL
           mkdir -p docs/data
           mkdir -p docs/images
           mkdir -p docs/images/cast
