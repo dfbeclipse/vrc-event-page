@@ -22,6 +22,7 @@ on:
       - "sitemap.xml"
       - ".github/workflows/build-docs.yml"
       - "scripts/generate-cast-json.js"
+      - "scripts/convert-cast-images.js"
   workflow_dispatch:
 permissions:
   contents: write
@@ -38,16 +39,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-      
+
+      - name: Install dependencies
+        run: npm install sharp
+
+      - name: Convert cast images
+        run: |
+          node scripts/convert-cast-images.js
+
       - name: Generate cast data
         run: |
           node scripts/generate-cast-json.js
-      
+
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
@@ -57,14 +65,16 @@ jobs:
             git commit -m "chore: update cast data from images"
             git push
           fi
-      
+
       - name: Prepare site directory
         run: |
           rm -rf docs
+          rm -rf images/DL
           mkdir -p docs/data
           mkdir -p docs/images
           mkdir -p docs/images/cast
           mkdir -p docs/images/gallery
+          mkdir -p docs/images/DL
           mkdir -p docs/video
           cp index.html docs/
           cp attending-cast.html docs/
@@ -82,6 +92,7 @@ jobs:
           cp images/x-logo.svg docs/images/
           cp images/cast/* docs/images/cast/
           cp images/gallery/* docs/images/gallery/
+          if [ -d images/DL ]; then cp images/DL/* docs/images/DL/; fi
           cp video/thumbnail.png docs/video/
           if [ -f video/Eclipse_01.mp4 ]; then cp video/Eclipse_01.mp4 docs/video/; fi
           python - <<'PY'
@@ -95,15 +106,15 @@ jobs:
                   encoding="utf-8",
               )
           PY
-      
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs
-  
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
